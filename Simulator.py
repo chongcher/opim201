@@ -20,7 +20,6 @@ class Simulator:
     if percentage == '62':
         to_be_processed = 1197
         expected_output = 850
-        last_machine = 7
     else:
         raise Exception("Percentage not recognised!")
 
@@ -34,7 +33,7 @@ class Simulator:
     tempering = Tempering()
     moulding = Moulding()
     workflow = [bean_cleaner, roaster, winnower, melangeur]
-    if as_is:
+    if as_is == "true":
         workflow.append(conche_asis)
         workflow.append(tempering)
         workflow.append(moulding)
@@ -44,9 +43,12 @@ class Simulator:
         workflow.append(ball_mill)
         workflow.append(tempering)
         workflow.append(moulding)
-        print("Beginning as-is simulation")
+        print("Beginning to-be simulation")
 
-    queue = [to_be_processed, 0, 0, 0, 0, 0, 0, 0]
+    queue = [to_be_processed]
+    for i in range(0, len(workflow)):
+        queue.append(0)
+    last_machine = len(queue) - 1
     elapsed_time = -1
     while queue[last_machine] < expected_output:
         elapsed_time += 1
