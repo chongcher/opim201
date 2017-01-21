@@ -52,7 +52,7 @@ class Simulator:
     elapsed_time = -1
     while queue[last_machine] < expected_output:
         elapsed_time += 1
-        print(elapsed_time, ": ", queue.__str__())
+        #print(elapsed_time, ": ", queue.__str__())
         for i in range(0, len(workflow)):
             result = workflow[i].step()
             if result == -1:
@@ -72,5 +72,28 @@ class Simulator:
                 queue[i+1] += result
                 #print("What What! ", queue[i+1])
                 #print("What What What! ", queue)
+        if (elapsed_time % 15) == 0:
+            print("Time: ", elapsed_time)
+            if len(workflow) == 7:
+                machine_names = ['Bean Cleaner', 'Roaster', 'Winnower', "Melangeur", 'Conche', 'Tempering',
+                                 'Moulding']
+            else:
+                machine_names = ['Bean Cleaner', 'Roaster', 'Winnower', "Melangeur", 'Conche', 'Ball Mill',
+                                 'Tempering', 'Moulding']
+            for i in range(0, len(queue) - 1):
+                print(machine_names[i], "\n\tProcessing = ", workflow[i].current_input, "\n\tIn queue = ", queue[i])
+            print("Total Output = ", queue[len(queue) - 1])
+            print("\n")
 
-    print("Elapsed Time: ", elapsed_time)
+    print("---End of workflow---")
+    print("Total Elapsed Time: ", elapsed_time)
+    if len(workflow) == 7:
+        machine_names = ['Bean Cleaner', 'Roaster', 'Winnower', "Melangeur", 'Conche', 'Tempering',
+                         'Moulding']
+    else:
+        machine_names = ['Bean Cleaner', 'Roaster', 'Winnower', "Melangeur", 'Conche', 'Ball Mill',
+                         'Tempering', 'Moulding']
+    for i in range(0, len(queue) - 1):
+        print(machine_names[i], "\n\tProcessing = ", workflow[i].current_input, "\n\tIn queue = ", queue[i])
+    print("Total Output = ", queue[len(queue) - 1])
+    print("\n")
