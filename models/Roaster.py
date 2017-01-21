@@ -20,8 +20,6 @@ class Roaster:
             return -1
 
     def start_cycle(self, new_input):
-        print("current input: ", self.current_input)
-        print("new input: ", new_input)
         if self.current_input != 0:
             raise Exception('Cycle started while input is not 0')
         elif new_input <= 0:
