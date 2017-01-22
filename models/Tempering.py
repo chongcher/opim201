@@ -4,9 +4,10 @@ class Tempering:
     cycle_time = 60
     output_ratio = 140/140
 
-    def __init__(self):
+    def __init__(self, max_input):
         self.elapsed_time = 0
         self.current_input = 0
+        self.max_input = max_input
 
     def step(self):
         if self.current_input == 0:

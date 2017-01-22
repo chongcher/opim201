@@ -27,11 +27,11 @@ class Simulator:
     roaster = Roaster()
     winnower = Winnower()
     melangeur = Melangeur()
-    conche_asis = ConcheAsIs()
-    conche_tobe = ConcheToBe()
-    ball_mill = BallMillToBe()
-    tempering = Tempering()
-    moulding = Moulding()
+    conche_asis = ConcheAsIs(expected_output)
+    conche_tobe = ConcheToBe(expected_output)
+    ball_mill = BallMillToBe(expected_output)
+    tempering = Tempering(expected_output*0.1)  # Tempering and moulding takes 10%
+    moulding = Moulding(expected_output*0.1)    # of output of conche machine
     workflow = [bean_cleaner, roaster, winnower, melangeur]
     if as_is == "true":
         workflow.append(conche_asis)
@@ -50,6 +50,7 @@ class Simulator:
         queue.append(0)
     last_machine = len(queue) - 1
     elapsed_time = -1
+    #while queue[last_machine] < expected_output * 0.35: # Only 35% is packed by Scharffen Berger
     while queue[last_machine] < expected_output:
         elapsed_time += 1
         #print(elapsed_time, ": ", queue.__str__())
@@ -58,20 +59,19 @@ class Simulator:
             if result == -1:
                 pass
             elif result == 0:
-                temp = min(workflow[i].max_input, queue[i])
-                #print("Hey!", workflow[i].max_input)
-                #print("Hey Hey!", queue[i])
-                #print("Hey Hey Hey!", min(workflow[i].max_input, queue[i]))
-                if temp <= 0: pass
-                else:
-                    queue[i] -= temp
-                    workflow[i].start_cycle(min(workflow[i].max_input, temp))
+                if queue[i] >= workflow[i].max_input:
+                    queue[i] -= workflow[i].max_input
+                    workflow[i].start_cycle(workflow[i].max_input)
+                elif sum(queue[0:i]) == 0 and queue[i] > 0:
+                    waiting = False
+                    for j in range(0, i):
+                        if workflow[j].current_input != 0:
+                            waiting = True
+                    if not waiting:
+                        workflow[i].start_cycle(queue[i])
+                        queue[i] = 0
             else:
-                #print("What! ", queue[i+1])
-                #print("Result: ", result)
                 queue[i+1] += result
-                #print("What What! ", queue[i+1])
-                #print("What What What! ", queue)
         if (elapsed_time % 15) == 0:
             print("Time: ", elapsed_time)
             if len(workflow) == 7:
@@ -81,7 +81,7 @@ class Simulator:
                 machine_names = ['Bean Cleaner', 'Roaster', 'Winnower', "Melangeur", 'Conche', 'Ball Mill',
                                  'Tempering', 'Moulding']
             for i in range(0, len(queue) - 1):
-                print(machine_names[i], "\n\tProcessing = ", workflow[i].current_input, "\n\tIn queue = ", queue[i])
+                print(machine_names[i], "\n\tIn queue = ", queue[i], "\n\tProcessing = ", workflow[i].current_input)
             print("Total Output = ", queue[len(queue) - 1])
             print("\n")
 
@@ -94,6 +94,6 @@ class Simulator:
         machine_names = ['Bean Cleaner', 'Roaster', 'Winnower', "Melangeur", 'Conche', 'Ball Mill',
                          'Tempering', 'Moulding']
     for i in range(0, len(queue) - 1):
-        print(machine_names[i], "\n\tProcessing = ", workflow[i].current_input, "\n\tIn queue = ", queue[i])
+        print(machine_names[i], "\n\tIn queue = ", queue[i], "\n\tProcessing = ", workflow[i].current_input)
     print("Total Output = ", queue[len(queue) - 1])
     print("\n")

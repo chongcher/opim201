@@ -4,9 +4,10 @@ class ConcheToBe:
     cycle_time = 600
     output_ratio = 1400/1400
 
-    def __init__(self):
+    def __init__(self, max_input):
         self.elapsed_time = 0
         self.current_input = 0
+        self.max_input = max_input
 
     def step(self):
         if self.current_input == 0:
